@@ -11,8 +11,13 @@ class Gemly < OpenStruct
   def self.pull_spec_from(raw)
     name = raw.split.first
     url = APIURL + name + '.json'
-    body = Curl::Easy.http_get(url).body_str
-    @spec = Yajl::Parser.parse body, symbolize_keys: true
+    begin
+      body = Curl::Easy.http_get(url).body_str
+      @spec = Yajl::Parser.parse body, symbolize_keys: true
+    rescue
+      @spec = {}
+    end
+    @spec
   end
 
   def self.attributes
